@@ -8,6 +8,15 @@
 
 //initially, the current pointer will point to the dummy node
 
+//I am using a guest list analogy to write it better
+//I learned about constructors in struct while analysing this problem, that is why I am using it 
+
+//current is an iterator pointer that moves along the new merged list, 
+//always pointing to the last node added so the next node can be attached.
+
+
+//The -> operator dereferences the pointer and accesses the member.
+
 #include <iostream>
 #include <vector>
 
@@ -18,21 +27,23 @@ struct ListNode {
     ListNode *next;   // The Next Pointer = Points to the next Guest
     
     // Constructors for easy creation
-    ListNode() : val(0), next(nullptr) {}
-    ListNode(int x) : val(x), next(nullptr) {}
-    ListNode(int x, ListNode *next) : val(x), next(next) {}
+    ListNode() : val(0), next(nullptr) {} //This creates a node with value 0 and no next node
+    ListNode(int x) : val(x), next(nullptr) {} //This creates a node with the value but no next node
+    ListNode(int x, ListNode *next) : val(x), next(next) {} //has both value with a node and the address of the next one 
 };
 
 class Solution {
 public:
     // The core logic to merge the two sorted lists
+    //this function points to the head of two lists
+
     ListNode* mergeTwoLists(ListNode* list1, ListNode* list2) {
         
         // 1. Create the Dummy Head (The Clipboard)
         // Its value (0) doesn't matter. It's just a starting anchor.
         ListNode dummyHead(0); 
         
-        // 'current' is the pointer (Your finger) that tracks the end of the merged list.
+        //current points to the node I created above
         ListNode* current = &dummyHead;
 
         // 2. Iterative Merging Loop (The Comparison Loop)
@@ -52,6 +63,7 @@ public:
             }
             
             // Move 'current' forward to the Node it just attached, preparing for the next attachment.
+            //this is very crucial as current is always moving
             current = current->next;
         }
 
