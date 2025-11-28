@@ -42,57 +42,36 @@ public:
     // The core logic to merge the two sorted lists
     //this function points to the head of two lists
 
-    ListNode* mergeTwoLists(ListNode* list1, ListNode* list2) {
-        
-        // 1. Create the Dummy Head (The Clipboard)
-        // Its value (0) doesn't matter. It's just a starting anchor.
-        ListNode dummyHead(0); 
-        
-        //current points to the node I created above
-        ListNode* current = &dummyHead;
-
-        // 2. Iterative Merging Loop (The Comparison Loop)
-        while (list1 != nullptr && list2 != nullptr) {
-            
-            // Compare the Value (val) of the current Nodes
-            if (list1->val <= list2->val) {
-                // If list1 is smaller, attach list1's Node to 'current's next pointer
-                current->next = list1;
-                // Move list1 forward to the next Node in its list
-                list1 = list1->next;
-            } else {
-                // If list2 is smaller, attach list2's Node to 'current's next pointer
-                current->next = list2;
-                // Move list2 forward to the next Node in its list
-                list2 = list2->next;
-            }
-            
-            // Move 'current' forward to the Node it just attached, preparing for the next attachment.
-            //this is very crucial as current is always moving
-            current = current->next;
-        }
-
-        // 3. Handling Remaining Nodes (Stapling the rest)
-        // Attach whichever list still has remaining nodes.
-        if (list1 != nullptr) {
-            current->next = list1;
-        } else {
-            current->next = list2;
-        }
-
-        // 4. Returning the Result
-        // Return the first actual Node after the Dummy Head.
-        return dummyHead.next;
+    ListNode* mergeTwoListsRecursive(ListNode* list1, ListNode* list2) {
+    // Base Cases: If either list is empty, return the other list.
+    if (list1 == nullptr) {
+        return list2;
     }
-};
+    if (list2 == nullptr) {
+        return list1;
+    }
+
+    // Recursive Step
+    if (list1->val <= list2->val) {
+        // list1 is the smaller head. The result's next node
+        // is the merge of list1's tail and the full list2.
+        list1->next = mergeTwoListsRecursive(list1->next, list2);
+        return list1; // Return the chosen head
+    } else {
+        // list2 is the smaller head. The result's next node
+        // is the merge of the full list1 and list2's tail.
+        list2->next = mergeTwoListsRecursive(list1, list2->next);
+        return list2; // Returning the chosen head
+    }
+}};
 
 // --- Helper functions for testing ---
 
 ListNode* createList(const vector<int>& v) {
     if (v.empty()) return nullptr;
-    ListNode* head = new ListNode(v[0]);
-    ListNode* current = head;
-    // 'size_t' is still standard, no change needed.
+    ListNode* head = new ListNode(v[0]); //head is established as the starting pointer
+    ListNode* current = head; //this will move through
+
     for (size_t i = 1; i < v.size(); ++i) {
         current->next = new ListNode(v[i]);
         current = current->next;
@@ -103,7 +82,7 @@ ListNode* createList(const vector<int>& v) {
 void printList(ListNode* head) {
     ListNode* current = head;
     while (current != nullptr) {
-        // 'cout' and 'endl' can now be used directly.
+        
         cout << current->val;
         if (current->next != nullptr) {
             cout << " -> ";
@@ -117,7 +96,7 @@ int main() {
     Solution s;
 
     // List 1 (Your list): Sorted ages
-    // The 'vector' type can now be used directly.
+    
     vector<int> ages1 = {22, 28, 35};
     ListNode* list1 = createList(ages1);
     
@@ -131,13 +110,12 @@ int main() {
     cout << "List 2 (Friend's List): ";
     printList(list2);
 
-    // Call the function to merge the lists
-    ListNode* mergedList = s.mergeTwoLists(list1, list2);
+    // Calling the function to merge the lists
+    ListNode* mergedList = s.mergeTwoListsRecursive(list1, list2);
     
     cout << "\nMerged Sorted List (The Master List): ";
     printList(mergedList);
     
-    // Note: In a production environment, you would need to add code
-    // to deallocate (delete) all the ListNodes to prevent memory leaks.
+  
     return 0;
 }
